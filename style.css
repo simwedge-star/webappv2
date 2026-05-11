@@ -293,3 +293,32 @@ button:hover {
     font-size: 0.98rem;
   }
 }
+
+.tag-manager {
+  border-color: #f59e0b;
+  color: #b45309;
+}
+
+.student-actions {
+  margin-top: 10px;
+}
+
+.link-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border: 1.5px solid #93c5fd;
+  color: #1d4ed8;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.no-link-msg {
+  display: inline-block;
+  font-size: 0.78rem;
+  color: var(--muted);
+}

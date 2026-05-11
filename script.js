@@ -3,6 +3,23 @@ const result = document.getElementById("result");
 const dateSelect = document.getElementById("dateSelect");
 const tutorSelect = document.getElementById("tutorSelect");
 
+let linkMap = {};
+let managerMap = {};
+
+async function loadLinks() {
+  try {
+    const response = await fetch("/api/links");
+    const data = await response.json();
+
+    if (data.success) {
+      linkMap = data.links || {};
+      managerMap = data.managerMap || {};
+    }
+  } catch (error) {
+    console.error("링크 불러오기 실패:", error);
+  }
+}
+
 async function loadDates() {
   try {
     const response = await fetch("/api/dates");
@@ -96,6 +113,10 @@ function renderSchedule(data) {
         const seatNum = seatMatch ? seatMatch[2] : (rawSeat.replace(/[^\d]/g, "") || String(idx + 1));
         const seatRoom = seatMatch ? seatMatch[1].trim() : "";
 
+        const studentKey = `${student.name} ${student.subject} ${student.clipboard}`;
+        const studentUrl = linkMap[studentKey] || "";
+        const managerName = managerMap[studentKey] || "";
+
         html += `
           <div class="student-card">
             <div class="seat-bar seat-bar-${bk}"></div>
@@ -109,6 +130,14 @@ function renderSchedule(data) {
                 ${student.subject ? `<span class="st-tag tag-subject">${student.subject}</span>` : ""}
                 ${student.seat ? `<span class="st-tag tag-seat">${student.seat}</span>` : ""}
                 ${student.clipboard ? `<span class="st-tag tag-num">📋 ${student.clipboard}</span>` : ""}
+                ${managerName ? `<span class="st-tag tag-manager">👤 ${managerName}</span>` : ""}
+              </div>
+              <div class="student-actions">
+                ${
+                  studentUrl
+                    ? `<a class="link-btn" href="${studentUrl}" target="_blank" rel="noopener noreferrer">통합자료 열기</a>`
+                    : `<span class="no-link-msg">링크 없음</span>`
+                }
               </div>
             </div>
           </div>
@@ -158,4 +187,5 @@ loadBtn.addEventListener("click", async () => {
   }
 });
 
+loadLinks();
 loadDates();
