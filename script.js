@@ -1,5 +1,3 @@
-alert("새 script.js가 실행됐어요");
-
 const loadBtn = document.getElementById("loadBtn");
 const result = document.getElementById("result");
 const dateSelect = document.getElementById("dateSelect");
