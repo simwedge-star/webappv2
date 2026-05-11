@@ -76,22 +76,41 @@ function renderSchedule(data) {
   `;
 
   data.blocks.forEach(block => {
+    const bk = block.block || "F";
+
     html += `
-      <div class="block-card">
-        <div class="block-title">${block.block}콤마</div>
-        <div class="block-arrival">출근: ${block.arrival || "-"}</div>
+      <div class="block-section section-${bk}">
+        <div class="block-header">
+          <div class="block-badge badge-${bk}">${bk}</div>
+          <span class="block-title">${bk}콤마</span>
+          <span class="arrival-chip">출근 ${block.arrival || "-"}</span>
+        </div>
     `;
 
     if (!block.students || block.students.length === 0) {
-      html += `<div class="empty-message">학생 없음</div>`;
+      html += `<div class="empty-message">이 블록에 학생이 없어요.</div>`;
     } else {
-      block.students.forEach(student => {
+      block.students.forEach((student, idx) => {
+        const rawSeat = student.seat || String(idx + 1);
+        const seatMatch = rawSeat.match(/^(.+?)\s+(\d+)번$/);
+        const seatNum = seatMatch ? seatMatch[2] : (rawSeat.replace(/[^\d]/g, "") || String(idx + 1));
+        const seatRoom = seatMatch ? seatMatch[1].trim() : "";
+
         html += `
           <div class="student-card">
-            <div><strong>이름:</strong> ${student.name}</div>
-            <div><strong>과목:</strong> ${student.subject}</div>
-            <div><strong>좌석:</strong> ${student.seat}</div>
-            <div><strong>번호:</strong> ${student.clipboard}</div>
+            <div class="seat-bar seat-bar-${bk}"></div>
+            <div class="seat-section">
+              <span class="seat-num">${seatNum}</span>
+              ${seatRoom ? `<span class="seat-room">${seatRoom}</span>` : ""}
+            </div>
+            <div class="card-inner">
+              <div class="student-name">${student.name}</div>
+              <div class="student-tags">
+                ${student.subject ? `<span class="st-tag tag-subject">${student.subject}</span>` : ""}
+                ${student.seat ? `<span class="st-tag tag-seat">${student.seat}</span>` : ""}
+                ${student.clipboard ? `<span class="st-tag tag-num">📋 ${student.clipboard}</span>` : ""}
+              </div>
+            </div>
           </div>
         `;
       });
