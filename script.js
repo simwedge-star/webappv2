@@ -113,10 +113,22 @@ function renderSchedule(data) {
         const seatNum = seatMatch ? seatMatch[2] : (rawSeat.replace(/[^\d]/g, "") || String(idx + 1));
         const seatRoom = seatMatch ? seatMatch[1].trim() : "";
 
-        const studentKey = `${student.name} ${student.subject} ${student.clipboard}`;
-        const studentUrl = linkMap[studentKey] || "";
-        const managerName = managerMap[studentKey] || "";
+        const keyCandidates = [
+        `${student.name} ${student.subject} ${student.clipboard}`,
+        `${student.name} ${student.subject}`,
+        `${student.name}`
+      ];
 
+      const matchedKey =
+        keyCandidates.find(key => linkMap[key]) ||
+        Object.keys(linkMap).find(key =>
+          key.includes(student.name) &&
+          key.includes(student.subject || "")
+        ) ||
+        "";
+
+      const studentUrl = matchedKey ? (linkMap[matchedKey] || "") : "";
+      const managerName = matchedKey ? (managerMap[matchedKey] || "") : "";
         html += `
           <div class="student-card">
             <div class="seat-bar seat-bar-${bk}"></div>
