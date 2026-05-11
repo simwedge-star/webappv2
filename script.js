@@ -5,7 +5,7 @@ const tutorSelect = document.getElementById("tutorSelect");
 
 async function loadDates() {
   try {
-    const response = await fetch(`/api/dates`);
+    const response = await fetch("/api/dates");
     const data = await response.json();
 
     if (!data.success) {
