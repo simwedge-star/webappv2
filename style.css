@@ -25,6 +25,11 @@ input {
   box-sizing: border-box;
   font-size: 16px;
 }
+label {
+  display: block;
+  margin-top: 12px;
+  font-weight: bold;
+}
 
 button {
   padding: 12px 16px;
