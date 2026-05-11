@@ -2,9 +2,85 @@
 const result = document.getElementById("result");
 const dateSelect = document.getElementById("dateSelect");
 const tutorSelect = document.getElementById("tutorSelect");
+const entryScreen = document.getElementById("entryScreen");
+const appScreen = document.getElementById("appScreen");
+const entryInput = document.getElementById("entryInput");
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const headerTutorName = document.getElementById("headerTutorName");
 
 let linkMap = {};
 let managerMap = {};
+let currentTutor = "";
+let appLoaded = false;
+
+function startApp() {
+  if (appLoaded) return;
+
+  appLoaded = true;
+  loadLinks();
+  loadDates();
+}
+
+function doLogin() {
+  const name = entryInput.value.trim();
+
+  if (!name) {
+    entryInput.focus();
+    return;
+  }
+
+  currentTutor = name;
+  headerTutorName.textContent = `${name} 튜터님`;
+
+  try {
+    localStorage.setItem("savedTutor", name);
+  } catch (error) {
+    console.error("이름 저장 실패:", error);
+  }
+
+  entryScreen.style.display = "none";
+  appScreen.style.display = "flex";
+  startApp();
+}
+
+function doLogout() {
+  currentTutor = "";
+  appLoaded = false;
+  linkMap = {};
+  managerMap = {};
+
+  try {
+    localStorage.removeItem("savedTutor");
+  } catch (error) {
+    console.error("저장된 이름 삭제 실패:", error);
+  }
+
+  entryInput.value = "";
+  headerTutorName.textContent = "튜터님";
+  dateSelect.innerHTML = '<option value="">날짜를 불러오는 중...</option>';
+  tutorSelect.innerHTML = '<option value="">튜터를 불러오는 중...</option>';
+  result.textContent = "아직 불러온 내용이 없습니다.";
+
+  appScreen.style.display = "none";
+  entryScreen.style.display = "flex";
+  entryInput.focus();
+}
+
+function tryAutoLogin() {
+  try {
+    const savedTutor = localStorage.getItem("savedTutor");
+
+    if (savedTutor) {
+      entryInput.value = savedTutor;
+      doLogin();
+    } else {
+      entryInput.focus();
+    }
+  } catch (error) {
+    console.error("자동 로그인 실패:", error);
+  }
+}
 
 async function loadLinks() {
   try {
@@ -69,6 +145,13 @@ async function loadTutors(selectedDate) {
       option.textContent = name;
       tutorSelect.appendChild(option);
     });
+
+    if (currentTutor) {
+      const hasCurrentTutor = Array.from(tutorSelect.options).some(option => option.value === currentTutor);
+      if (hasCurrentTutor) {
+        tutorSelect.value = currentTutor;
+      }
+    }
   } catch (error) {
     tutorSelect.innerHTML = '<option value="">오류가 발생했습니다.</option>';
   }
@@ -167,6 +250,16 @@ dateSelect.addEventListener("change", () => {
   loadTutors(dateSelect.value);
 });
 
+loginBtn.addEventListener("click", doLogin);
+
+entryInput.addEventListener("keydown", event => {
+  if (event.key === "Enter") {
+    doLogin();
+  }
+});
+
+logoutBtn.addEventListener("click", doLogout);
+
 loadBtn.addEventListener("click", async () => {
   const selectedDate = dateSelect.value;
   const tutorName = tutorSelect.value;
@@ -199,5 +292,4 @@ loadBtn.addEventListener("click", async () => {
   }
 });
 
-loadLinks();
-loadDates();
+tryAutoLogin();

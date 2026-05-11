@@ -7,25 +7,48 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="wrap">
-    <h1>튜터 웹앱</h1>
-    <p>화면 연결 테스트 중입니다.</p>
+  <div id="entryScreen">
+    <div class="entry-card">
+      <h1>튜터 웹앱</h1>
+      <p>튜터 이름을 입력하고 수업 정보를 확인하세요.</p>
 
-    <label for="dateSelect">날짜 선택</label>
-    <select id="dateSelect">
-      <option value="">날짜를 불러오는 중...</option>
-    </select>
+      <label for="entryInput">튜터 이름</label>
+      <input id="entryInput" type="text" autocomplete="name" placeholder="예: 김민수">
 
-    <label for="tutorSelect">튜터 선택</label>
-    <select id="tutorSelect">
-      <option value="">튜터를 불러오는 중...</option>
-    </select>
-
-    <button id="loadBtn">불러오기</button>
-
-    <div id="result">아직 불러온 내용이 없습니다.</div>
-
+      <button id="loginBtn" type="button">시작하기</button>
+      <div class="entry-hint">입력한 이름은 이 기기에 저장되어 다음에 자동으로 들어갑니다.</div>
+    </div>
   </div>
+
+  <div id="appScreen">
+    <header class="app-header">
+      <div>
+        <div class="app-header-label">현재 튜터</div>
+        <div id="headerTutorName">튜터님</div>
+      </div>
+      <button id="logoutBtn" type="button">나가기</button>
+    </header>
+
+    <main class="wrap">
+      <h1>튜터 웹앱</h1>
+      <p>날짜와 튜터를 선택해서 수업 정보를 불러옵니다.</p>
+
+      <label for="dateSelect">날짜 선택</label>
+      <select id="dateSelect">
+        <option value="">날짜를 불러오는 중...</option>
+      </select>
+
+      <label for="tutorSelect">튜터 선택</label>
+      <select id="tutorSelect">
+        <option value="">튜터를 불러오는 중...</option>
+      </select>
+
+      <button id="loadBtn" type="button">불러오기</button>
+
+      <div id="result">아직 불러온 내용이 없습니다.</div>
+    </main>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
