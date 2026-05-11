@@ -1,14 +1,25 @@
-export default function handler(req, res) {
-  const { date } = req.query;
+export default async function handler(req, res) {
+  try {
+    const { date } = req.query;
 
-  const tutorMap = {
-    "2026-05-01": ["심예지", "김민수"],
-    "2026-05-02": ["박지은", "최현우"],
-    "2026-05-03": ["심예지", "이도윤"]
-  };
+    if (!date) {
+      return res.status(400).json({
+        success: false,
+        message: "date가 없습니다."
+      });
+    }
 
-  res.status(200).json({
-    success: true,
-    tutors: tutorMap[date] || []
-  });
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwIvGwTjWEYXPtHrdwEjU4tYoOY_YKK2O-0WYUj1Kc9C4oW0AuEZI20tKEWS_ouz-g/exec";
+    const url = `${GAS_URL}?mode=tutors&date=${encodeURIComponent(date)}`;
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
 }

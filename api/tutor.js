@@ -9,7 +9,7 @@ export default async function handler(req, res) {
       });
     }
 
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbxTDDAy-W6DnCJ0f73n8sx3xbTAH-9YZWD2AGsl6uhbsVa60t9VQSvbycuh7viyaqBQ/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwIvGwTjWEYXPtHrdwEjU4tYoOY_YKK2O-0WYUj1Kc9C4oW0AuEZI20tKEWS_ouz-g/exec";
     const url = `${GAS_URL}?name=${encodeURIComponent(name)}`;
 
     const response = await fetch(url);
