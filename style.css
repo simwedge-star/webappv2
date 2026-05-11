@@ -154,6 +154,136 @@ select:focus {
   border-color: var(--accent);
 }
 
+.calendar-card {
+  margin: 18px 0 10px;
+  padding: 14px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.calendar-title {
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--text);
+}
+
+.calendar-nav {
+  width: 34px;
+  height: 34px;
+  margin: 0;
+  padding: 0;
+  border-radius: 10px;
+  background: white;
+  color: var(--accent);
+  border: 1.5px solid var(--border);
+  font-size: 1.35rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-nav:hover {
+  background: var(--accent-light);
+  color: var(--accent-dark);
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.calendar-weekday {
+  padding: 4px 0 6px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.calendar-day {
+  min-height: 46px;
+  margin: 0;
+  padding: 0;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  color: #cbd5e1;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.calendar-day.has-date {
+  color: var(--text);
+  cursor: pointer;
+}
+
+.calendar-day.has-date:hover {
+  background: var(--accent-light);
+}
+
+.calendar-day.selected {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.calendar-day.today {
+  border-color: var(--accent-light);
+}
+
+.calendar-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.calendar-day.selected .calendar-dot {
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.calendar-loading {
+  padding: 18px 4px 6px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.selected-date-badge {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--accent-light);
+  color: var(--accent);
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.selected-date-badge.visible {
+  display: flex;
+}
+
 button {
   width: 100%;
   margin-top: 8px;

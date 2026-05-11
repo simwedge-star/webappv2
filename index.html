@@ -31,16 +31,25 @@
 
     <main class="wrap">
       <h1>튜터 웹앱</h1>
-      <p>날짜와 튜터를 선택해서 수업 정보를 불러옵니다.</p>
+      <p>캘린더에서 날짜를 고르고 튜터를 선택해서 수업 정보를 불러옵니다.</p>
 
-      <label for="dateSelect">날짜 선택</label>
-      <select id="dateSelect">
-        <option value="">날짜를 불러오는 중...</option>
-      </select>
+      <section class="calendar-card" aria-label="날짜 선택">
+        <div class="calendar-header">
+          <button class="calendar-nav" id="prevMonthBtn" type="button" aria-label="이전 달">&#8249;</button>
+          <div class="calendar-title" id="calendarTitle">날짜 불러오는 중</div>
+          <button class="calendar-nav" id="nextMonthBtn" type="button" aria-label="다음 달">&#8250;</button>
+        </div>
+        <div class="calendar-grid" id="calendarGrid"></div>
+        <div class="calendar-loading" id="calendarLoading">날짜를 불러오는 중...</div>
+        <div class="selected-date-badge" id="selectedDateBadge">
+          <span>선택한 날짜</span>
+          <strong id="selectedDateText"></strong>
+        </div>
+      </section>
 
       <label for="tutorSelect">튜터 선택</label>
       <select id="tutorSelect">
-        <option value="">튜터를 불러오는 중...</option>
+        <option value="">날짜를 먼저 선택하세요</option>
       </select>
 
       <button id="loadBtn" type="button">불러오기</button>
