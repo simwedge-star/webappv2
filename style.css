@@ -179,6 +179,10 @@ body {
   display: block;
 }
 
+.content-panel[hidden] {
+  display: none !important;
+}
+
 .panel-heading {
   margin-bottom: 16px;
 }

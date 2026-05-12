@@ -1,4 +1,4 @@
-import { MAIN_SHEET_URL } from "./config.js";
+const MAIN_SHEET_URL = "https://docs.google.com/spreadsheets/d/1FR7Vrs_TEkmD8l34aHTNaLGB_ZiTnk6nCfSbjLacGA0/edit?gid=378762600#gid=378762600";
 
 const loadBtn = document.getElementById("loadBtn");
 const result = document.getElementById("result");
@@ -222,7 +222,7 @@ function renderSchedule(data) {
                     : `
                       <div class="no-link-wrap">
                         <span class="no-link-msg">개별 링크 없음</span>
-                        <a class="link-btn main-sheet-btn" href="${escapeHtml(MAIN_SHEET_URL || "#")}" target="_blank" rel="noopener noreferrer">메인시트에서 찾기</a>
+                        <a class="link-btn main-sheet-btn" href="${escapeHtml(MAIN_SHEET_URL)}" target="_blank" rel="noopener noreferrer">메인시트에서 찾기</a>
                       </div>
                     `
                 }
@@ -343,11 +343,15 @@ async function loadWeeklySchedule() {
 
 function showPanel(panelId) {
   contentPanels.forEach(panel => {
-    panel.classList.toggle("active", panel.id === panelId);
+    const isActive = panel.id === panelId;
+    panel.classList.toggle("active", isActive);
+    panel.hidden = !isActive;
   });
 
   navItems.forEach(item => {
-    item.classList.toggle("active", item.dataset.panelTarget === panelId);
+    const isActive = item.dataset.panelTarget === panelId;
+    item.classList.toggle("active", isActive);
+    item.setAttribute("aria-current", isActive ? "page" : "false");
   });
 }
 
