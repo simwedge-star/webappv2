@@ -1,6 +1,5 @@
 const loadBtn = document.getElementById("loadBtn");
 const result = document.getElementById("result");
-const dateSelect = document.getElementById("dateSelect");
 const entryInput = document.getElementById("entryInput");
 const entryScreen = document.getElementById("entryScreen");
 const appScreen = document.getElementById("appScreen");
@@ -8,9 +7,20 @@ const headerTutorName = document.getElementById("headerTutorName");
 const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 
+const calendarGrid = document.getElementById("calendarGrid");
+const calendarTitle = document.getElementById("calendarTitle");
+const calendarLoading = document.getElementById("calendarLoading");
+const selectedDateBadge = document.getElementById("selectedDateBadge");
+const selectedDateText = document.getElementById("selectedDateText");
+
 let currentTutor = "";
 let linkMap = {};
 let managerMap = {};
+
+let allDates = [];
+let selectedDate = "";
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
 
 async function loadLinks() {
   try {
@@ -28,31 +38,94 @@ async function loadLinks() {
 
 async function loadDates() {
   try {
+    calendarLoading.textContent = "날짜를 불러오는 중...";
     const response = await fetch("/api/dates");
     const data = await response.json();
 
     if (!data.success) {
-      if (dateSelect) {
-        dateSelect.innerHTML = '<option value="">날짜를 불러오지 못했습니다.</option>';
-      }
+      calendarLoading.textContent = "날짜를 불러오지 못했습니다.";
       return;
     }
 
-    if (dateSelect) {
-      dateSelect.innerHTML = '<option value="">날짜를 선택하세요</option>';
+    allDates = data.dates || [];
 
-      data.dates.forEach(item => {
-        const option = document.createElement("option");
-        option.value = item.value;
-        option.textContent = item.label;
-        option.dataset.gid = item.gid || "";
-        dateSelect.appendChild(option);
-      });
+    if (allDates.length > 0) {
+      const firstDate = new Date(allDates[0].value + "T00:00:00");
+      currentYear = firstDate.getFullYear();
+      currentMonth = firstDate.getMonth();
     }
+
+    calendarLoading.style.display = "none";
+    renderCalendar(currentYear, currentMonth);
   } catch (error) {
-    if (dateSelect) {
-      dateSelect.innerHTML = '<option value="">오류가 발생했습니다.</option>';
+    calendarLoading.textContent = "오류가 발생했습니다.";
+  }
+}
+
+function formatMonthTitle(year, month) {
+  return `${year}년 ${month + 1}월`;
+}
+
+function getDateMap() {
+  const map = {};
+  allDates.forEach(item => {
+    map[item.value] = item;
+  });
+  return map;
+}
+
+function renderCalendar(year, month) {
+  const dateMap = getDateMap();
+  calendarGrid.innerHTML = "";
+
+  calendarTitle.textContent = formatMonthTitle(year, month);
+
+  const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
+  weekdays.forEach(day => {
+    const el = document.createElement("div");
+    el.className = "calendar-weekday";
+    el.textContent = day;
+    calendarGrid.appendChild(el);
+  });
+
+  const firstDay = new Date(year, month, 1);
+  const lastDate = new Date(year, month + 1, 0).getDate();
+  const startWeekday = firstDay.getDay();
+
+  for (let i = 0; i < startWeekday; i++) {
+    const blank = document.createElement("div");
+    blank.className = "calendar-day empty";
+    calendarGrid.appendChild(blank);
+  }
+
+  for (let day = 1; day <= lastDate; day++) {
+    const d = new Date(year, month, day);
+    const dateKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    const hasData = !!dateMap[dateKey];
+
+    const cell = document.createElement("button");
+    cell.type = "button";
+    cell.className = "calendar-day";
+    cell.textContent = String(day);
+
+    if (hasData) {
+      cell.classList.add("has-data");
+      if (selectedDate === dateKey) {
+        cell.classList.add("selected");
+      }
+
+      cell.addEventListener("click", () => {
+        selectedDate = dateKey;
+        selectedDateText.textContent = dateMap[dateKey].label || dateKey;
+        selectedDateBadge.style.display = "flex";
+        renderCalendar(currentYear, currentMonth);
+      });
+    } else {
+      cell.disabled = true;
+      cell.classList.add("disabled");
     }
+
+    calendarGrid.appendChild(cell);
   }
 }
 
@@ -147,10 +220,6 @@ function renderSchedule(data) {
 }
 
 async function fetchSchedule() {
-  const selectedDate = dateSelect ? dateSelect.value : "";
-  const selectedOption = dateSelect ? dateSelect.options[dateSelect.selectedIndex] : null;
-  const gid = selectedOption?.dataset?.gid || "";
-
   if (!selectedDate) {
     result.textContent = "날짜를 먼저 선택해 주세요.";
     return;
@@ -160,6 +229,9 @@ async function fetchSchedule() {
     result.textContent = "튜터 정보가 없습니다. 다시 로그인해 주세요.";
     return;
   }
+
+  const dateInfo = allDates.find(item => item.value === selectedDate);
+  const gid = dateInfo?.gid || "";
 
   result.textContent = `${selectedDate} / ${currentTutor} 수업 정보를 불러오는 중...`;
 
@@ -206,10 +278,11 @@ function doLogin() {
 
 function doLogout() {
   currentTutor = "";
+  selectedDate = "";
   localStorage.removeItem("savedTutor");
 
   if (entryInput) entryInput.value = "";
-  if (dateSelect) dateSelect.selectedIndex = 0;
+  if (selectedDateBadge) selectedDateBadge.style.display = "none";
   if (result) result.innerHTML = `<div class="empty-message">아직 조회된 내용이 없습니다.</div>`;
 
   appScreen.style.display = "none";
@@ -234,6 +307,24 @@ function tryAutoLogin() {
     appScreen.style.display = "none";
   }
 }
+
+document.getElementById("prevMonthBtn")?.addEventListener("click", () => {
+  currentMonth -= 1;
+  if (currentMonth < 0) {
+    currentMonth = 11;
+    currentYear -= 1;
+  }
+  renderCalendar(currentYear, currentMonth);
+});
+
+document.getElementById("nextMonthBtn")?.addEventListener("click", () => {
+  currentMonth += 1;
+  if (currentMonth > 11) {
+    currentMonth = 0;
+    currentYear += 1;
+  }
+  renderCalendar(currentYear, currentMonth);
+});
 
 if (loginBtn) {
   loginBtn.addEventListener("click", doLogin);
