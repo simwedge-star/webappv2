@@ -32,18 +32,18 @@
     <div class="app-shell">
       <aside class="sidebar" aria-label="주요 메뉴">
         <div class="sidebar-section-label">조회</div>
-        <a class="nav-item active" href="#dateLookupPanel">
+        <a class="nav-item active" href="#dateLookupPanel" data-panel-target="dateLookupPanel">
           <span class="nav-icon" aria-hidden="true">📅</span>
           <span>날짜 조회</span>
         </a>
-        <a class="nav-item" href="#weeklyPanel">
+        <a class="nav-item" href="#weeklyPanel" data-panel-target="weeklyPanel">
           <span class="nav-icon" aria-hidden="true">🗓️</span>
           <span>이번 주 스케줄</span>
         </a>
       </aside>
 
       <main class="wrap">
-        <section class="content-panel date-panel" id="dateLookupPanel">
+        <section class="content-panel date-panel active" id="dateLookupPanel">
           <div class="panel-heading">
             <h1>날짜 조회</h1>
             <p>캘린더에서 날짜를 고르고 수업 정보를 불러옵니다.</p>

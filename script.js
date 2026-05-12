@@ -15,6 +15,8 @@ const selectedDateText = document.getElementById("selectedDateText");
 const weeklyRefreshBtn = document.getElementById("weeklyRefreshBtn");
 const weeklyLoading = document.getElementById("weeklyLoading");
 const weeklyContent = document.getElementById("weeklyContent");
+const navItems = document.querySelectorAll("[data-panel-target]");
+const contentPanels = document.querySelectorAll(".content-panel");
 
 let currentTutor = "";
 let linkMap = {};
@@ -332,6 +334,16 @@ async function loadWeeklySchedule() {
   }
 }
 
+function showPanel(panelId) {
+  contentPanels.forEach(panel => {
+    panel.classList.toggle("active", panel.id === panelId);
+  });
+
+  navItems.forEach(item => {
+    item.classList.toggle("active", item.dataset.panelTarget === panelId);
+  });
+}
+
 async function fetchSchedule() {
   if (!selectedDate) {
     result.textContent = "날짜를 먼저 선택해 주세요.";
@@ -463,5 +475,14 @@ if (loadBtn) {
 if (weeklyRefreshBtn) {
   weeklyRefreshBtn.addEventListener("click", loadWeeklySchedule);
 }
+
+navItems.forEach(item => {
+  item.addEventListener("click", (event) => {
+    event.preventDefault();
+    showPanel(item.dataset.panelTarget);
+  });
+});
+
+showPanel("dateLookupPanel");
 
 tryAutoLogin();
