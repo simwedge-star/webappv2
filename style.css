@@ -242,14 +242,14 @@ select:focus {
   opacity: 1;
 }
 
-.calendar-day.has-data {
+.calendar-day.has-date {
   color: #111827;
   background: white;
   cursor: pointer;
   border-color: transparent;
 }
 
-.calendar-day.has-data:hover {
+.calendar-day.has-date:hover {
   background: #eff6ff;
 }
 
