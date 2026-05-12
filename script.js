@@ -12,6 +12,9 @@ const calendarTitle = document.getElementById("calendarTitle");
 const calendarLoading = document.getElementById("calendarLoading");
 const selectedDateBadge = document.getElementById("selectedDateBadge");
 const selectedDateText = document.getElementById("selectedDateText");
+const weeklyRefreshBtn = document.getElementById("weeklyRefreshBtn");
+const weeklyLoading = document.getElementById("weeklyLoading");
+const weeklyContent = document.getElementById("weeklyContent");
 
 let currentTutor = "";
 let linkMap = {};
@@ -227,6 +230,108 @@ function renderSchedule(data) {
   result.innerHTML = html;
 }
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function normalizeWeeklyBlocks(blocks) {
+  if (Array.isArray(blocks)) {
+    return blocks;
+  }
+
+  if (blocks && typeof blocks === "object") {
+    return Object.keys(blocks).sort().map(key => ({
+      block: key,
+      ...(blocks[key] || {})
+    }));
+  }
+
+  return [];
+}
+
+function renderWeeklySchedule(data) {
+  if (!weeklyContent || !weeklyLoading) return;
+
+  weeklyLoading.style.display = "none";
+
+  if (!data.success && data.message) {
+    weeklyContent.innerHTML = `<div class="empty-message">${escapeHtml(data.message)}</div>`;
+    return;
+  }
+
+  const days = Array.isArray(data) ? data : (data.days || data.weekly || []);
+
+  if (!days.length) {
+    weeklyContent.innerHTML = `<div class="empty-message">이번 주 스케줄이 없습니다.</div>`;
+    return;
+  }
+
+  const today = new Date();
+  const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  const firstLabel = days[0].label || days[0].date || days[0].dateKey || "";
+  const lastLabel = days[days.length - 1].label || days[days.length - 1].date || days[days.length - 1].dateKey || "";
+
+  let html = `
+    <div class="week-summary">
+      ${escapeHtml(currentTutor)} 튜터님 · ${escapeHtml(firstLabel)}${firstLabel !== lastLabel ? ` ~ ${escapeHtml(lastLabel)}` : ""} · ${days.length}일
+    </div>
+  `;
+
+  days.forEach(day => {
+    const dateKey = day.dateKey || day.date || "";
+    const label = day.label || dateKey;
+    const blocks = normalizeWeeklyBlocks(day.blocks);
+
+    html += `
+      <section class="week-day-card ${dateKey === todayKey ? "today-card" : ""}">
+        <div class="week-day-head">
+          <div class="week-day-date">${escapeHtml(label)}</div>
+          ${day.arrival ? `<span class="week-day-chip">출근 ${escapeHtml(day.arrival)}</span>` : ""}
+        </div>
+        <div class="week-blocks">
+          ${
+            blocks.length
+              ? blocks.map(block => {
+                  const bk = block.block || "F";
+                  const count = Array.isArray(block.students) ? block.students.length : 0;
+                  return `
+                    <div class="week-block-chip">
+                      <span class="week-block-badge badge-${escapeHtml(bk)}">${escapeHtml(bk)}</span>
+                      <span>${escapeHtml(bk)}콤마${count ? ` · ${count}명` : ""}</span>
+                    </div>
+                  `;
+                }).join("")
+              : `<div class="empty-message">등록된 블록이 없습니다.</div>`
+          }
+        </div>
+      </section>
+    `;
+  });
+
+  weeklyContent.innerHTML = html;
+}
+
+async function loadWeeklySchedule() {
+  if (!weeklyContent || !weeklyLoading || !currentTutor) return;
+
+  weeklyLoading.style.display = "block";
+  weeklyLoading.textContent = "이번 주 스케줄을 불러오는 중...";
+  weeklyContent.innerHTML = "";
+
+  try {
+    const response = await fetch(`/api/weekly?tutor=${encodeURIComponent(currentTutor)}`);
+    const data = await response.json();
+    renderWeeklySchedule(data);
+  } catch (error) {
+    weeklyLoading.style.display = "none";
+    weeklyContent.innerHTML = `<div class="empty-message">이번 주 스케줄을 불러오지 못했습니다: ${escapeHtml(error.message)}</div>`;
+  }
+}
+
 async function fetchSchedule() {
   if (!selectedDate) {
     result.textContent = "날짜를 먼저 선택해 주세요.";
@@ -261,6 +366,7 @@ async function initApp() {
   await loadLinks();
   await loadDates();
   result.innerHTML = `<div class="empty-message">날짜를 선택하고 조회해 주세요.</div>`;
+  loadWeeklySchedule();
 }
 
 function doLogin() {
@@ -352,6 +458,10 @@ if (entryInput) {
 
 if (loadBtn) {
   loadBtn.addEventListener("click", fetchSchedule);
+}
+
+if (weeklyRefreshBtn) {
+  weeklyRefreshBtn.addEventListener("click", loadWeeklySchedule);
 }
 
 tryAutoLogin();
