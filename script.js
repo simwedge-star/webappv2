@@ -18,6 +18,8 @@ const weeklyContent = document.getElementById("weeklyContent");
 const navItems = document.querySelectorAll("[data-panel-target]");
 const contentPanels = document.querySelectorAll(".content-panel");
 
+const MAIN_SHEET_URL = "";
+
 let currentTutor = "";
 let linkMap = {};
 let managerMap = {};
@@ -217,7 +219,12 @@ function renderSchedule(data) {
                 ${
                   studentUrl
                     ? `<a class="link-btn" href="${studentUrl}" target="_blank" rel="noopener noreferrer">통합자료 열기</a>`
-                    : `<span class="no-link-msg">링크 없음</span>`
+                    : `
+                      <div class="no-link-wrap">
+                        <span class="no-link-msg">개별 링크 없음</span>
+                        <a class="link-btn main-sheet-btn" href="${escapeHtml(MAIN_SHEET_URL || "#")}" target="_blank" rel="noopener noreferrer">메인시트에서 찾기</a>
+                      </div>
+                    `
                 }
               </div>
             </div>
