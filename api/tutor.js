@@ -1,4 +1,4 @@
-import { requireGasUrl } from "../config.js";
+import { requireGasUrl } from "./env.js";
 
 export default async function handler(req, res) {
   try {
