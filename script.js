@@ -1,3 +1,5 @@
+import { MAIN_SHEET_URL } from "./config.js";
+
 const loadBtn = document.getElementById("loadBtn");
 const result = document.getElementById("result");
 const entryInput = document.getElementById("entryInput");
@@ -17,8 +19,6 @@ const weeklyLoading = document.getElementById("weeklyLoading");
 const weeklyContent = document.getElementById("weeklyContent");
 const navItems = document.querySelectorAll("[data-panel-target]");
 const contentPanels = document.querySelectorAll(".content-panel");
-
-const MAIN_SHEET_URL = "";
 
 let currentTutor = "";
 let linkMap = {};

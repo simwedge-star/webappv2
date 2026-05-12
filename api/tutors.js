@@ -1,3 +1,5 @@
+import { requireGasUrl } from "../config.js";
+
 export default async function handler(req, res) {
   try {
     const { date } = req.query;
@@ -9,8 +11,8 @@ export default async function handler(req, res) {
       });
     }
 
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbwIvGwTjWEYXPtHrdwEjU4tYoOY_YKK2O-0WYUj1Kc9C4oW0AuEZI20tKEWS_ouz-g/exec";
-    const url = `${GAS_URL}?mode=tutors&date=${encodeURIComponent(date)}`;
+    const gasUrl = requireGasUrl();
+    const url = `${gasUrl}?mode=tutors&date=${encodeURIComponent(date)}`;
 
     const response = await fetch(url);
     const data = await response.json();

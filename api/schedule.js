@@ -1,3 +1,5 @@
+import { requireGasUrl } from "../config.js";
+
 export default async function handler(req, res) {
   try {
     const { date, tutor, gid } = req.query;
@@ -9,9 +11,9 @@ export default async function handler(req, res) {
       });
     }
 
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbwIvGwTjWEYXPtHrdwEjU4tYoOY_YKK2O-0WYUj1Kc9C4oW0AuEZI20tKEWS_ouz-g/exec";
+    const gasUrl = requireGasUrl();
 
-    let url = `${GAS_URL}?mode=schedule&date=${encodeURIComponent(date)}&tutor=${encodeURIComponent(tutor)}`;
+    let url = `${gasUrl}?mode=schedule&date=${encodeURIComponent(date)}&tutor=${encodeURIComponent(tutor)}`;
 
     if (gid) {
       url += `&gid=${encodeURIComponent(gid)}`;
