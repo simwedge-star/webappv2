@@ -229,34 +229,46 @@ select:focus {
   font-weight: 700;
 }
 
-.calendar-day.has-date {
-  color: var(--text);
+.calendar-day.empty {
+  background: transparent;
+  border-color: transparent;
+  pointer-events: none;
+}
+
+.calendar-day.disabled {
+  color: #cbd5e1;
+  background: transparent;
+  cursor: default;
+  opacity: 1;
+}
+
+.calendar-day.has-data {
+  color: #111827;
+  background: white;
   cursor: pointer;
+  border-color: transparent;
 }
 
-.calendar-day.has-date:hover {
-  background: var(--accent-light);
-}
-
-.calendar-day.selected {
-  background: var(--accent);
-  color: white;
-  border-color: var(--accent);
+.calendar-day.has-data:hover {
+  background: #eff6ff;
 }
 
 .calendar-day.today {
-  border-color: var(--accent-light);
+  border-color: #93c5fd;
+}
+
+.calendar-day.selected {
+  background: var(--accent) !important;
+  color: white !important;
+  border-color: var(--accent) !important;
+}
+
+.calendar-day-num {
+  line-height: 1;
 }
 
 .calendar-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 999px;
-  background: var(--accent);
-}
-
-.calendar-day.selected .calendar-dot {
-  background: rgba(255, 255, 255, 0.78);
+  display: none;
 }
 
 .calendar-loading {
@@ -471,32 +483,6 @@ button:hover {
   font-size: 0.9rem;
 }
 
-@media (max-width: 640px) {
-  body {
-    padding: 20px 10px;
-  }
-
-  .wrap {
-    padding: 18px 14px;
-  }
-
-  .schedule-header {
-    font-size: 0.88rem;
-  }
-
-  .seat-section {
-    min-width: 60px;
-  }
-
-  .seat-num {
-    font-size: 1.15rem;
-  }
-
-  .student-name {
-    font-size: 0.98rem;
-  }
-}
-
 .tag-manager {
   border-color: #f59e0b;
   color: #b45309;
@@ -524,4 +510,30 @@ button:hover {
   display: inline-block;
   font-size: 0.78rem;
   color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 20px 10px;
+  }
+
+  .wrap {
+    padding: 18px 14px;
+  }
+
+  .schedule-header {
+    font-size: 0.88rem;
+  }
+
+  .seat-section {
+    min-width: 60px;
+  }
+
+  .seat-num {
+    font-size: 1.15rem;
+  }
+
+  .student-name {
+    font-size: 0.98rem;
+  }
 }

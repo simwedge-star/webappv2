@@ -92,6 +92,9 @@ function renderCalendar(year, month) {
   const lastDate = new Date(year, month + 1, 0).getDate();
   const startWeekday = firstDay.getDay();
 
+  const today = new Date();
+  const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
   for (let i = 0; i < startWeekday; i++) {
     const blank = document.createElement("div");
     blank.className = "calendar-day empty";
@@ -108,8 +111,13 @@ function renderCalendar(year, month) {
     cell.className = "calendar-day";
     cell.textContent = String(day);
 
+    if (dateKey === todayKey) {
+      cell.classList.add("today");
+    }
+
     if (hasData) {
-      cell.classList.add("has-data");
+      cell.classList.add("has-date");
+
       if (selectedDate === dateKey) {
         cell.classList.add("selected");
       }
@@ -117,7 +125,7 @@ function renderCalendar(year, month) {
       cell.addEventListener("click", () => {
         selectedDate = dateKey;
         selectedDateText.textContent = dateMap[dateKey].label || dateKey;
-        selectedDateBadge.style.display = "flex";
+        selectedDateBadge.classList.add("visible");
         renderCalendar(currentYear, currentMonth);
       });
     } else {
@@ -282,7 +290,7 @@ function doLogout() {
   localStorage.removeItem("savedTutor");
 
   if (entryInput) entryInput.value = "";
-  if (selectedDateBadge) selectedDateBadge.style.display = "none";
+  if (selectedDateBadge) selectedDateBadge.classList.remove("visible");
   if (result) result.innerHTML = `<div class="empty-message">아직 조회된 내용이 없습니다.</div>`;
 
   appScreen.style.display = "none";
