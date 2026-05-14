@@ -27,7 +27,7 @@ export default async function handler(req, res) {
     if (!supabaseUrl || !supabaseKey) {
       return res.status(500).json({
         success: false,
-        message: "Supabase 환경변수가 설정되지 않았습니다."
+        message: "links_supabase_test."
       });
     }
 
